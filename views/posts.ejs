@@ -1,0 +1,57 @@
+<%- include('header') %>
+
+<% posts.forEach(function (post) { %>
+  <%- include('components/post-content', { post: post }) %>
+<% }) %>
+
+<% if (posts.total) { %>
+
+<div style="display: flex; justify-content: center; margin-top: 40px">
+<div class="ui borderless pagination menu">
+  <% if (posts.currentPage != 1) {%>
+    <% if (!tag) { %>
+        <a class="item" href="/posts?author=<%=posts.author%>&page=1">
+    <% } else { %>
+        <a class="item" href="/tags/<%= tag %>/page/1">
+    <% } %>
+      <i class="left arrow icon"></i>
+    </a>
+  <% } else { %>
+    <a class="item">
+      <i class="left arrow icon"></i>
+    </a>
+  <% } %>
+
+  <% for (let i = 1; i <= posts.total; i ++) { %>
+    <% if (i == posts.currentPage) { %>
+      <% if (!tag) { %>
+        <a class="item ui primary button" href="/posts?author=<%=posts.author%>&page=<%= i %>"><%= i %></a>
+      <% } else { %>
+        <a class="item ui primary button" href="/tags/<%= tag %>/page/<%= i %>"><%= i %></a>
+      <% } %>
+    <% } else { %>
+      <% if (!tag) { %>
+        <a class="item" href="/posts?author=<%=posts.author%>&page=<%= i %>"><%= i %></a>
+      <% } else { %>
+        <a class="item" href="/tags/<%= tag %>/page/<%= i %>"><%= i %></a>
+      <% } %>
+    <% } %>
+  <% } %>
+
+  <% if (posts.currentPage != posts.total) {%>
+    <% if (!tag) { %>
+        <a class="item" href="/posts?author=<%=posts.author%>&page=<%=posts.total%>">
+    <% } else { %>
+        <a class="item" href="/tags/<%= tag %>/page/<%=posts.total%>">
+    <% } %>
+      <i class="right arrow icon"></i>
+    </a>
+  <% } else { %>
+    <a class="item">
+      <i class="right arrow icon"></i>
+    </a>
+  <% } %>
+</div>
+</div>
+<% } %>
+<%- include('footer') %>

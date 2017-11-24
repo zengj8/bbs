@@ -1,0 +1,139 @@
+<% if (user && post.author._id && user._id.toString() === post.author._id.toString()) { %>
+<form action="/tags/<%= post._id %>/tag" method="post">
+<div class="ui right labeled left icon input" style="margin-bottom: 14px; margin-left: 477px; margin-top: 15px">
+
+  <i class="tags icon"></i>
+  <input type="text" name="name" placeholder="输入标签">
+  <a class="ui tag label" onclick="addTag(event)">
+    添加标签
+  </a>
+
+</div>
+</form>
+<% } %>
+
+<div style="clear: both"></div>
+<div class="ui grid" style="width: 100%">
+  <div class="four wide column"></div>
+  <div class="eight wide column">
+    <div class="ui segment">
+      <div class="ui minimal comments">
+        <h3 class="ui dividing header">留言</h3>
+        
+        <% comments.forEach(function (comment) { %>
+          <div class="comment">
+            <span class="avatar avatar-link">
+              <img class="avatar" src="/img/<%= comment.author.avatar %>">
+            </span>
+            <div class="content">
+              <a class="author" href="/posts?author=<%= comment.author._id %>"><%= comment.author.name %></a>
+              <div class="metadata">
+                <span class="date"><%= comment.created_at %></span>
+              </div>
+              <div class="text"><%- comment.content %></div>
+
+              <div class="actions">
+                <% if (user) {%>
+                  <a class="reply active" onclick="displayForm(event)">Reply</a>
+                <% } %>
+                <% if (user && comment.author._id && user._id.toString() === comment.author._id.toString()) { %>
+                  <a class="reply active" href="/comments/<%= comment._id %>/remove">Delete</a>
+                <% } %>
+              </div>
+              <form class="ui reply form" method="post" action="/replys/<%= comment._id %>/reply" style="display: none">
+                <div class="field">
+                  <textarea name="content"></textarea>
+                </div>
+                <input type="hidden" name="replyType" value="0" />
+                <input type="hidden" name="commentId" value="<%= comment._id %>" />
+                <input type="hidden" name="toAuthor" value="<%= comment.author._id %>" />
+                <input type="submit" class="ui icon button" value="留言" />
+                <input type="button" class="ui icon button" value="取消" onclick="hideParent(event)"/>
+              </form>
+            </div>
+
+            <div class="comments">
+              <% comment.replys.forEach(function (reply) { %>
+                <div class="comment">
+                  <a class="avatar avatar-link">
+                    <img class="avatar" src="/img/<%= reply.fromAuthor.avatar %>">
+                  </a>
+                  <div class="content">
+                    <a class="author" href="/posts?author=<%= reply.fromAuthor._id %>"><%= reply.fromAuthor.name %></a>
+                    <div class="metadata">
+                      <span class="date"><%= reply.created_at %></span>
+                    </div>
+                    <div class="text">@<a class="author" href="/posts?author=<%= reply.toAuthor._id %>"><%= reply.toAuthor.name %></a>：<%- reply.content %></div>
+                    <div class="actions">
+                      <% if (user) {%>
+                        <a class="reply active" onclick="displayForm(event)">Reply</a>
+                      <% } %>
+                      <% if (user && reply.fromAuthor._id && user._id.toString() === reply.fromAuthor._id.toString()) { %>
+                        <a class="reply active" href="/replys/<%= reply._id %>/remove">Delete</a>
+                      <% } %>
+                    </div>
+                    <form class="ui reply form" method="post" action="/replys/<%= reply._id %>/reply" style="display: none">
+                      <div class="field">
+                        <textarea name="content"></textarea>
+                      </div>
+                      <input type="hidden" name="replyType" value="1" />
+                      <input type="hidden" name="commentId" value="<%= comment._id %>" />
+                      <input type="hidden" name="toAuthor" value="<%= reply.fromAuthor._id %>" />
+                      <input type="submit" class="ui icon button" value="留言" />
+                      <input type="button" class="ui icon button" value="取消" onclick="hideParent(event)"/>
+                    </form>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+
+          </div>
+        <% }) %>
+
+        <% if (comments.total) { %>
+        <div style="display: flex; justify-content: center; margin-top: 40px">
+        <div class="ui borderless pagination menu">
+          <% if (comments.currentPage != 1) {%>
+            <a class="item" href="/posts?/<%= post._id %>/page/1">
+              <i class="left arrow icon"></i>
+            </a>
+          <% } else { %>
+            <a class="item">
+              <i class="left arrow icon"></i>
+            </a>
+          <% } %>
+
+          <% for (let i = 1; i <= comments.total; i ++) { %>
+            <% if (i == comments.currentPage) { %>
+              <a class="item ui primary button" href="/posts/<%= post._id %>/page/<%=i%>"><%= i %></a>
+            <% } else { %>
+              <a class="item" href="/posts/<%= post._id %>/page/<%=i%>"><%= i %></a>
+            <% } %>
+          <% } %>
+
+          <% if (comments.currentPage != comments.total) {%>
+            <a class="item" href="/posts/<%= post._id %>/page/<%=comments.total%>">
+              <i class="right arrow icon"></i>
+            </a>
+          <% } else { %>
+            <a class="item">
+              <i class="right arrow icon"></i>
+            </a>
+          <% } %>
+        </div>
+        </div>
+        <% } %>
+
+        <% if (user) { %>
+          <form class="ui reply form" method="post" action="/comments/<%= post._id %>/comment">
+            <div class="field">
+              <textarea name="content"></textarea>
+            </div>
+            <input type="submit" class="ui icon button" value="留言" />
+          </form>
+        <% } %>
+
+      </div>
+    </div>
+  </div>
+</div>

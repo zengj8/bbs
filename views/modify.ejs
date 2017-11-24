@@ -1,0 +1,44 @@
+<%- include('header') %>
+
+<div class="ui grid">
+    <div class="four wide column"></div>
+    <div class="eight wide column">
+        <form class="ui form segment" method="post" enctype="multipart/form-data">
+            <div class="field ">
+                <label>用户名</label>
+                <input placeholder="用户名" type="text" name="name" value="<%= user.name %>">
+            </div>
+            <div class="field ">
+                <label>性别</label>
+                <select class="ui compact selection dropdown" name="gender" selected="<%= user.gender %>">
+                    <% if (user.gender == 'm') {%>
+                        <option value="m" selected="selected">男</option>
+                    <% } else { %>
+                        <option value="m">男</option>
+                    <% } %>
+                    <% if (user.gender == 'f') {%>
+                        <option value="f" selected="selected">女</option>
+                    <% } else { %>
+                        <option value="f">女</option>
+                    <% } %>
+                    <% if (user.gender == 'x') {%>
+                        <option value="x" selected="selected">保密</option>
+                    <% } else { %>
+                        <option value="x">保密</option>
+                    <% } %>
+                </select>
+            </div>
+            <div class="field ">
+                <label>头像</label>
+                <input type="file" name="avatar">
+            </div>
+            <div class="field ">
+                <label>个人简介</label>
+                <textarea name="bio" rows="5"><%= user.bio %></textarea>
+            </div>
+            <input type="submit" class="ui button fluid" value="修改资料">
+        </form>
+    </div>
+</div>
+
+<%- include('footer') %>
